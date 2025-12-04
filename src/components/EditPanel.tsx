@@ -18,6 +18,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { useGlassStore } from '../store/useGlassStore';
+import { PHONE_FRAME_SIZE } from './PhoneFrame';
 
 const EditPanel: React.FC = () => {
   const {
@@ -179,7 +180,7 @@ const EditPanel: React.FC = () => {
           />
 
           <Typography gutterBottom sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem' }}>
-            透明度: {(glassMorphism.opacity * 100).toFixed(0)}%
+            α値（不透明度）: {(glassMorphism.opacity * 100).toFixed(0)}%
           </Typography>
           <Slider
             value={glassMorphism.opacity}
@@ -219,8 +220,8 @@ const EditPanel: React.FC = () => {
           <Slider
             value={glassMorphism.width}
             onChange={(_, value) => setGlassSize(value as number, glassMorphism.height)}
-            min={100}
-            max={350}
+            min={0}
+            max={PHONE_FRAME_SIZE.width}
             valueLabelDisplay="auto"
             sx={{ color: 'rgb(59, 130, 246)', mb: 3 }}
           />
@@ -231,8 +232,8 @@ const EditPanel: React.FC = () => {
           <Slider
             value={glassMorphism.height}
             onChange={(_, value) => setGlassSize(glassMorphism.width, value as number)}
-            min={100}
-            max={400}
+            min={0}
+            max={PHONE_FRAME_SIZE.height}
             valueLabelDisplay="auto"
             sx={{ color: 'rgb(59, 130, 246)', mb: 3 }}
           />
@@ -339,7 +340,7 @@ const EditPanel: React.FC = () => {
             value={background.scrollSpeed}
             onChange={(_, value) => setScrollSpeed(value as number)}
             min={0}
-            max={10}
+            max={30}
             step={0.1}
             valueLabelDisplay="auto"
             disabled={!background.isAutoScroll}

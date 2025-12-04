@@ -4,16 +4,22 @@ interface PhoneFrameProps {
   children?: React.ReactNode;
 }
 
+const PHONE_FRAME_RATIO = 85;
+
+export const PHONE_FRAME_SIZE = {
+  width: (393 / 100) * PHONE_FRAME_RATIO, // iPhone 14 Pro の幅
+  height: (852 / 100) * PHONE_FRAME_RATIO, // iPhone 14 Pro の高さ
+} as const;
+
 const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
-  // iPhone 14 Pro のサイズを参考 (393 x 852 px)
   return (
     <div className="relative">
       {/* Phone outer frame */}
       <div 
         className="relative bg-gray-900 rounded-[3rem] shadow-2xl border-[14px] border-gray-900"
         style={{
-          width: '393px',
-          height: '852px',
+          width: `${PHONE_FRAME_SIZE.width}px`,
+          height: `${PHONE_FRAME_SIZE.height}px`,
         }}
       >
         {/* Screen */}
