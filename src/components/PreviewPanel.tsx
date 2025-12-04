@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PhoneFrame from './PhoneFrame';
 import BackgroundPattern from './BackgroundPattern';
 import { useGlassStore } from '../store/useGlassStore';
@@ -6,10 +6,14 @@ import { useGlassStore } from '../store/useGlassStore';
 const PreviewPanel: React.FC = () => {
   const { background, glassMorphism } = useGlassStore();
   const [scrollOffset, setScrollOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartY, setDragStartY] = useState(0);
+  const [dragStartScroll, setDragStartScroll] = useState(0);
+  const phoneFrameRef = useRef<HTMLDivElement>(null);
 
   // 自動スクロールアニメーション
   useEffect(() => {
-    if (!background.isAutoScroll || background.scrollSpeed === 0) return;
+    if (!background.isAutoScroll || background.scrollSpeed === 0 || isDragging) return;
 
     let animationFrameId: number;
     let lastTime = Date.now();
@@ -30,12 +34,44 @@ const PreviewPanel: React.FC = () => {
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [background.scrollSpeed, background.isAutoScroll]);
+  }, [background.scrollSpeed, background.isAutoScroll, isDragging]);
+
+  // 手動スクロール処理
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (background.isAutoScroll) return;
+    setIsDragging(true);
+    setDragStartY(e.clientY);
+    setDragStartScroll(scrollOffset);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || background.isAutoScroll) return;
+    const deltaY = e.clientY - dragStartY;
+    setScrollOffset(dragStartScroll - deltaY);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+    if (background.isAutoScroll) return;
+    e.preventDefault();
+    setScrollOffset((prev) => prev + e.deltaY * 0.5);
+  };
 
   return (
     <div className="w-full h-full bg-gray-900 flex items-center justify-center p-8">
-
-      <PhoneFrame>
+      <div
+        ref={phoneFrameRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onWheel={handleWheel}
+        style={{ cursor: background.isAutoScroll ? 'default' : isDragging ? 'grabbing' : 'grab' }}
+      >
+        <PhoneFrame>
         {/* 背景パターン */}
         <BackgroundPattern
           pattern={background.pattern}
@@ -56,7 +92,9 @@ const PreviewPanel: React.FC = () => {
             backgroundColor: `rgba(255, 255, 255, ${glassMorphism.opacity})`,
             borderRadius: `${glassMorphism.borderRadius}px`,
             border: `1px solid rgba(255, 255, 255, ${glassMorphism.borderOpacity})`,
-            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+            boxShadow: glassMorphism.isShadowEnabled
+              ? '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
+              : 'none',
           }}
         >
           <div className="w-full h-full flex items-center justify-center p-6">
@@ -67,6 +105,7 @@ const PreviewPanel: React.FC = () => {
           </div>
         </div>
       </PhoneFrame>
+      </div>
     </div>
   );
 };
