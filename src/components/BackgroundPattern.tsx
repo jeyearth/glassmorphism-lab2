@@ -23,19 +23,13 @@ const BackgroundPattern: React.FC<BackgroundPatternProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // 描画ロジックを関数化
     const draw = () => {
-      // コンテナ（親のdiv）の現在サイズを取得
       const { clientWidth, clientHeight } = container;
 
-      // まだサイズが0なら描画しない（エラー防止）
       if (clientWidth === 0 || clientHeight === 0) return;
 
-      // キャンバスの解像度をコンテナに合わせる
-      // ※高解像度ディスプレイ(Retina)対応などは一旦省略していますが、
-      // サイズが合っていないとぼやけたり消えたりする原因になります。
       canvas.width = clientWidth;
-      canvas.height = clientHeight + spatialFrequency * 2; // スクロール余白分
+      canvas.height = clientHeight + spatialFrequency * 2; // スクロール分の余白
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -52,24 +46,19 @@ const BackgroundPattern: React.FC<BackgroundPatternProps> = ({
       }
     };
 
-    // 【重要】ResizeObserverでコンテナのサイズ変化を監視する
-    // これにより、マウント直後にサイズが0でも、サイズが確定した瞬間にdraw()が走ります。
     const resizeObserver = new ResizeObserver(() => {
       draw();
     });
 
     resizeObserver.observe(container);
 
-    // 初回実行
     draw();
 
-    // クリーンアップ
     return () => {
       resizeObserver.disconnect();
     };
-  }, [pattern, spatialFrequency]); // scrollOffsetは依存配列に入れない（Canvasの再生成を避けるためTransformで動かす）
+  }, [pattern, spatialFrequency]);
 
-  // --- 各描画関数 (変更なし) ---
   const drawStripePattern = (ctx: CanvasRenderingContext2D, w: number, h: number, f: number) => {
     const stripeWidth = f;
     let isBlack = true;
@@ -107,15 +96,11 @@ const BackgroundPattern: React.FC<BackgroundPatternProps> = ({
   };
 
   return (
-    // 親要素 (Container)
-    // h-full w-full で親(PhoneFrame)いっぱいに広げる
     <div ref={containerRef} className="absolute inset-0 w-full h-full overflow-hidden bg-white">
       <canvas
         ref={canvasRef}
-        className="block" // 余白消し
+        className="block"
         style={{
-          // Canvas自体はCSSでサイズ指定せず、属性(width/height)で管理するが、
-          // スクロール位置の調整だけCSS transformで行うとパフォーマンスが良い
           transform: `translateY(${-scrollOffset % (spatialFrequency * 2)}px)`,
         }}
       />

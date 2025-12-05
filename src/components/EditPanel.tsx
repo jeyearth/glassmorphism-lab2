@@ -128,7 +128,6 @@ const EditPanel: React.FC = () => {
         </AccordionDetails>
       </Accordion>
 
-      {/* Glass UI Control */}
       <Accordion
         defaultExpanded
         sx={{
@@ -162,7 +161,6 @@ const EditPanel: React.FC = () => {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          {/* マテリアル */}
           <Typography variant="subtitle2" sx={{ color: 'rgb(59, 130, 246)', mb: 2, fontWeight: 'bold' }}>
             マテリアル
           </Typography>
@@ -209,7 +207,6 @@ const EditPanel: React.FC = () => {
 
           <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
 
-          {/* ジオメトリ */}
           <Typography variant="subtitle2" sx={{ color: 'rgb(59, 130, 246)', mb: 2, fontWeight: 'bold' }}>
             ジオメトリ
           </Typography>
@@ -299,7 +296,6 @@ const EditPanel: React.FC = () => {
         </AccordionDetails>
       </Accordion>
 
-      {/* Animation Control */}
       <Accordion
         sx={{
           bgcolor: 'rgb(31, 41, 55)',
@@ -340,7 +336,7 @@ const EditPanel: React.FC = () => {
             value={background.scrollSpeed}
             onChange={(_, value) => setScrollSpeed(value as number)}
             min={0}
-            max={30}
+            max={50}
             step={0.1}
             valueLabelDisplay="auto"
             disabled={!background.isAutoScroll}

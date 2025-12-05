@@ -11,7 +11,6 @@ const PreviewPanel: React.FC = () => {
   const [dragStartScroll, setDragStartScroll] = useState(0);
   const phoneFrameRef = useRef<HTMLDivElement>(null);
 
-  // 自動スクロールアニメーション
   useEffect(() => {
     if (!background.isAutoScroll || background.scrollSpeed === 0 || isDragging) return;
 
@@ -36,7 +35,6 @@ const PreviewPanel: React.FC = () => {
     };
   }, [background.scrollSpeed, background.isAutoScroll, isDragging]);
 
-  // 手動スクロール処理
   const handleMouseDown = (e: React.MouseEvent) => {
     if (background.isAutoScroll) return;
     setIsDragging(true);
@@ -72,39 +70,38 @@ const PreviewPanel: React.FC = () => {
         style={{ cursor: background.isAutoScroll ? 'default' : isDragging ? 'grabbing' : 'grab' }}
       >
         <PhoneFrame>
-        {/* 背景パターン */}
-        <BackgroundPattern
-          pattern={background.pattern}
-          spatialFrequency={background.spatialFrequency}
-          scrollOffset={scrollOffset}
-        />
+          <BackgroundPattern
+            pattern={background.pattern}
+            spatialFrequency={background.spatialFrequency}
+            scrollOffset={scrollOffset}
+          />
 
-        {/* グラスモーフィズムUI */}
-        <div
-          className="absolute"
-          style={{
-            width: `${glassMorphism.width}px`,
-            height: `${glassMorphism.height}px`,
-            left: `${glassMorphism.positionX}%`,
-            top: `${glassMorphism.positionY}%`,
-            transform: 'translate(-50%, -50%)',
-            backdropFilter: `blur(${glassMorphism.blurStrength}px)`,
-            backgroundColor: `rgba(255, 255, 255, ${glassMorphism.opacity})`,
-            borderRadius: `${glassMorphism.borderRadius}px`,
-            border: `1px solid rgba(255, 255, 255, ${glassMorphism.borderOpacity})`,
-            boxShadow: glassMorphism.isShadowEnabled
-              ? '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-              : 'none',
-          }}
-        >
-          <div className="w-full h-full flex items-center justify-center p-6">
-            <div className="text-center">
-              <h3 className="text-gray-800 text-lg font-bold mb-2">Glass UI</h3>
-              <p className="text-gray-600 text-sm">グラスモーフィズム</p>
+          {/* グラスモーフィズムUIコンポーネント */}
+          <div
+            className="absolute"
+            style={{
+              width: `${glassMorphism.width}px`,
+              height: `${glassMorphism.height}px`,
+              left: `${glassMorphism.positionX}%`,
+              top: `${glassMorphism.positionY}%`,
+              transform: 'translate(-50%, -50%)',
+              backdropFilter: `blur(${glassMorphism.blurStrength}px)`,
+              backgroundColor: `rgba(255, 255, 255, ${glassMorphism.opacity})`,
+              borderRadius: `${glassMorphism.borderRadius}px`,
+              border: `1px solid rgba(255, 255, 255, ${glassMorphism.borderOpacity})`,
+              boxShadow: glassMorphism.isShadowEnabled
+                ? '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
+                : 'none',
+            }}
+          >
+            <div className="w-full h-full flex items-center justify-center p-6">
+              <div className="text-center">
+                <h3 className="text-gray-800 text-lg font-bold mb-2">Glass UI</h3>
+                <p className="text-gray-600 text-sm">グラスモーフィズム</p>
+              </div>
             </div>
           </div>
-        </div>
-      </PhoneFrame>
+        </PhoneFrame>
       </div>
     </div>
   );
