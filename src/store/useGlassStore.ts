@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 export type PatternType = "stripe" | "checkerboard" | "sine";
+export type ScrollVariationMode = "none" | "proportional" | "binary";
 
 interface BackgroundState {
   pattern: PatternType;
@@ -19,6 +20,10 @@ interface GlassMorphismState {
   positionX: number;
   positionY: number;
   isShadowEnabled: boolean;
+  scrollVariationMode: ScrollVariationMode;
+  targetBlurStrength: number;
+  targetOpacity: number;
+  maxProportionalSpeed: number;
 }
 
 interface GlassStore {
@@ -30,6 +35,10 @@ interface GlassStore {
   setSpatialFrequency: (frequency: number) => void;
   setScrollSpeed: (speed: number) => void;
   setAutoScroll: (enabled: boolean) => void;
+  setScrollVariationMode: (mode: ScrollVariationMode) => void;
+  setTargetBlurStrength: (blur: number) => void;
+  setTargetOpacity: (opacity: number) => void;
+  setMaxProportionalSpeed: (speed: number) => void;
 
   // GlassMorphism actions
   setBlurStrength: (blur: number) => void;
@@ -55,8 +64,8 @@ const DEFAULT_BACKGROUND: BackgroundState = {
 };
 
 const DEFAULT_GLASSMORPHISM: GlassMorphismState = {
-  blurStrength: 10,
-  opacity: 0.3,
+  blurStrength: 12,
+  opacity: 0.4,
   borderOpacity: 0.0,
   width: 300,
   height: 200,
@@ -64,6 +73,10 @@ const DEFAULT_GLASSMORPHISM: GlassMorphismState = {
   positionX: 50,
   positionY: 50,
   isShadowEnabled: false,
+  scrollVariationMode: "proportional",
+  targetBlurStrength: 5,
+  targetOpacity: 0.1,
+  maxProportionalSpeed: 500,
 };
 
 export const useGlassStore = create<GlassStore>((set) => ({
@@ -125,6 +138,26 @@ export const useGlassStore = create<GlassStore>((set) => ({
   setShadowEnabled: (isEnabled) =>
     set((state) => ({
       glassMorphism: { ...state.glassMorphism, isShadowEnabled: isEnabled },
+    })),
+
+  setScrollVariationMode: (mode) =>
+    set((state) => ({
+      glassMorphism: { ...state.glassMorphism, scrollVariationMode: mode },
+    })),
+
+  setTargetBlurStrength: (blur) =>
+    set((state) => ({
+      glassMorphism: { ...state.glassMorphism, targetBlurStrength: blur },
+    })),
+
+  setTargetOpacity: (opacity) =>
+    set((state) => ({
+      glassMorphism: { ...state.glassMorphism, targetOpacity: opacity },
+    })),
+
+  setMaxProportionalSpeed: (speed) =>
+    set((state) => ({
+      glassMorphism: { ...state.glassMorphism, maxProportionalSpeed: speed },
     })),
 
   // Reset actions

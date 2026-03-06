@@ -14,10 +14,13 @@ import {
   Button,
   Box,
   Divider,
+  RadioGroup,
+  Radio,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { useGlassStore } from '../store/useGlassStore';
+import type { ScrollVariationMode } from '../store/useGlassStore';
 import { PHONE_FRAME_SIZE } from './PhoneFrame';
 
 const EditPanel: React.FC = () => {
@@ -35,6 +38,10 @@ const EditPanel: React.FC = () => {
     setBorderRadius,
     setGlassPosition,
     setShadowEnabled,
+    setScrollVariationMode,
+    setTargetBlurStrength,
+    setTargetOpacity,
+    setMaxProportionalSpeed,
     resetAll,
     resetBackground,
     resetGlassMorphism,
@@ -73,7 +80,7 @@ const EditPanel: React.FC = () => {
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', pr: 2 }}>
-            <Typography>背景制御</Typography>
+            <Typography>背景</Typography>
             <Button
               component="div"
               size="small"
@@ -131,7 +138,7 @@ const EditPanel: React.FC = () => {
       </Accordion>
 
       <Accordion
-        defaultExpanded
+        // defaultExpanded
         sx={{
           bgcolor: 'rgb(31, 41, 55)',
           color: 'white',
@@ -169,7 +176,7 @@ const EditPanel: React.FC = () => {
           </Typography>
 
           <Typography gutterBottom sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem' }}>
-            ブラー強度: {glassMorphism.blurStrength}px
+            ブラー: {glassMorphism.blurStrength}px
           </Typography>
           <Slider
             value={glassMorphism.blurStrength}
@@ -300,6 +307,7 @@ const EditPanel: React.FC = () => {
       </Accordion>
 
       <Accordion
+        defaultExpanded
         sx={{
           bgcolor: 'rgb(31, 41, 55)',
           color: 'white'
@@ -345,6 +353,84 @@ const EditPanel: React.FC = () => {
             disabled={!background.isAutoScroll}
             sx={{ color: 'rgb(59, 130, 246)' }}
           />
+
+          <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
+
+          <Typography gutterBottom sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem', mb: 1 }}>
+            スクロール可変モード
+          </Typography>
+          <RadioGroup
+            value={glassMorphism.scrollVariationMode}
+            onChange={(e) => setScrollVariationMode(e.target.value as ScrollVariationMode)}
+          >
+            <FormControlLabel
+              value="none"
+              control={<Radio sx={{ color: 'rgba(255,255,255,0.5)', '&.Mui-checked': { color: 'rgb(59,130,246)' } }} />}
+              label={<Typography sx={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.875rem' }}>ノーマル（非可変）</Typography>}
+            />
+            <FormControlLabel
+              value="proportional"
+              control={<Radio sx={{ color: 'rgba(255,255,255,0.5)', '&.Mui-checked': { color: 'rgb(59,130,246)' } }} />}
+              label={<Typography sx={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.875rem' }}>パターンA: 速度に比例</Typography>}
+            />
+            <FormControlLabel
+              value="binary"
+              control={<Radio sx={{ color: 'rgba(255,255,255,0.5)', '&.Mui-checked': { color: 'rgb(59,130,246)' } }} />}
+              label={<Typography sx={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.875rem' }}>パターンB: 2状態（滑らかに変化）</Typography>}
+            />
+          </RadioGroup>
+
+          {glassMorphism.scrollVariationMode !== 'none' && (
+            <>
+              <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
+              <Typography variant="subtitle2" sx={{ color: 'rgb(59, 130, 246)', mb: 2, fontWeight: 'bold' }}>
+                ターゲット値（スクロール時）
+              </Typography>
+
+              <Typography gutterBottom sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem' }}>
+                ターゲット ブラー: {glassMorphism.targetBlurStrength}px
+              </Typography>
+              <Slider
+                value={glassMorphism.targetBlurStrength}
+                onChange={(_, value) => setTargetBlurStrength(value as number)}
+                min={0}
+                max={50}
+                valueLabelDisplay="auto"
+                sx={{ color: 'rgb(59, 130, 246)', mb: 3 }}
+              />
+
+              <Typography gutterBottom sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem' }}>
+                ターゲット α値: {(glassMorphism.targetOpacity * 100).toFixed(0)}%
+              </Typography>
+              <Slider
+                value={glassMorphism.targetOpacity}
+                onChange={(_, value) => setTargetOpacity(value as number)}
+                min={0}
+                max={1}
+                step={0.01}
+                valueLabelDisplay="auto"
+                valueLabelFormat={(value) => `${(value * 100).toFixed(0)}%`}
+                sx={{ color: 'rgb(59, 130, 246)', mb: 3 }}
+              />
+
+              {glassMorphism.scrollVariationMode === 'proportional' && (
+                <>
+                  <Typography gutterBottom sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem' }}>
+                    ターゲット最大速度: {glassMorphism.maxProportionalSpeed}
+                  </Typography>
+                  <Slider
+                    value={glassMorphism.maxProportionalSpeed}
+                    onChange={(_, value) => setMaxProportionalSpeed(value as number)}
+                    min={100}
+                    max={2000}
+                    step={50}
+                    valueLabelDisplay="auto"
+                    sx={{ color: 'rgb(59, 130, 246)', mb: 3 }}
+                  />
+                </>
+              )}
+            </>
+          )}
         </AccordionDetails>
       </Accordion>
     </div>

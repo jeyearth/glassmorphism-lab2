@@ -38,8 +38,6 @@ const BackgroundPattern: React.FC<BackgroundPatternProps> = ({
       // const dpr = window.devicePixelRatio || 1;
       const dpr = 1; // 現在はDPR非対応で固定
 
-      console.log("DPR: " + dpr);
-
       // スクロール時の継ぎ目をなくすため、余白を確保（1周期分で十分）
       const logicalHeight = clientHeight + logicalPixelsPerCycle;
 
