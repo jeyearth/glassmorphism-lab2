@@ -75,6 +75,7 @@ const EditPanel: React.FC = () => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', pr: 2 }}>
             <Typography>背景制御</Typography>
             <Button
+              component="div"
               size="small"
               onClick={(e) => {
                 e.stopPropagation();
@@ -115,13 +116,14 @@ const EditPanel: React.FC = () => {
           </FormControl>
 
           <Typography gutterBottom sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem' }}>
-            空間周波数: {background.spatialFrequency}px
+            空間周波数: {background.spatialFrequency} cpd
           </Typography>
           <Slider
             value={background.spatialFrequency}
             onChange={(_, value) => setSpatialFrequency(value as number)}
-            min={10}
-            max={200}
+            min={0.3}
+            max={5}
+            step={0.1}
             valueLabelDisplay="auto"
             sx={{ color: 'rgb(59, 130, 246)' }}
           />
@@ -140,6 +142,7 @@ const EditPanel: React.FC = () => {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', pr: 2 }}>
             <Typography>グラスモーフィズム</Typography>
             <Button
+              component="div"
               size="small"
               onClick={(e) => {
                 e.stopPropagation();
