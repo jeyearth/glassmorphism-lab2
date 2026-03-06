@@ -49,9 +49,9 @@ interface GlassStore {
 // Default states
 const DEFAULT_BACKGROUND: BackgroundState = {
   pattern: "stripe",
-  spatialFrequency: 50,
+  spatialFrequency: 1,
   scrollSpeed: 1,
-  isAutoScroll: true,
+  isAutoScroll: false,
 };
 
 const DEFAULT_GLASSMORPHISM: GlassMorphismState = {
